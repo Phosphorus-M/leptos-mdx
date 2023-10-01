@@ -10,8 +10,14 @@ use leptos::{
 /// Renders a markdown source into a Leptos component.
 /// Custom components can be used in the markdown source.
 pub fn Mdx(source: String, components: Components) -> impl IntoView {
-    let (_fm, html) = parse(&source).expect("invalid mdx");
+    let (_fm, mut html) = parse(&source).expect("invalid mdx");
     // TODO: we could expose frontmatter in the context so components can use its value
+
+    html = html.replace(
+        "<span style=\"color:#323232;\">\n</span>",
+        "<span style=\"color:#323232;\"><br/></span>",
+    ); // TODO: this is a hack to replace empty lines with <br/>
+    html = html.replace("    ", "&nbsp;&nbsp;&nbsp;&nbsp;"); // TODO: this is a hack to replace tabs with spaces
 
     let dom = Dom::parse(&html).expect("invalid html");
 

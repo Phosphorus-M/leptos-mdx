@@ -19,6 +19,7 @@ fn extract_frontmatter(input: &str) -> Result<(Option<frontmatter::Yaml>, &str),
 fn md_to_html(s: &str) -> String {
     let options = ComrakOptions {
         parse: comrak::ComrakParseOptions {
+            smart: true,
             ..comrak::ComrakParseOptions::default()
         },
 
@@ -34,6 +35,9 @@ fn md_to_html(s: &str) -> String {
 
         render: comrak::ComrakRenderOptions {
             unsafe_: true,
+            github_pre_lang: true,
+            hardbreaks: true,
+            full_info_string: true,
             ..comrak::ComrakRenderOptions::default()
         },
     };
