@@ -1,8 +1,6 @@
 use std::error::Error;
 
-use comrak::{
-    markdown_to_html_with_plugins, plugins::syntect::SyntectAdapter, ComrakOptions, ComrakPlugins,
-};
+use femark::{process_markdown_to_html, HTMLOutput};
 
 /// parse a markdown source into its optional frontmatter and the HTML string.
 pub fn parse(source: &str) -> Result<(Option<frontmatter::Yaml>, String), Box<dyn Error>> {
@@ -17,35 +15,8 @@ fn extract_frontmatter(input: &str) -> Result<(Option<frontmatter::Yaml>, &str),
 }
 
 fn md_to_html(s: &str) -> String {
-    let options = ComrakOptions {
-        parse: comrak::ComrakParseOptions {
-            smart: true,
-            ..comrak::ComrakParseOptions::default()
-        },
-
-        extension: comrak::ComrakExtensionOptions {
-            autolink: true,
-            table: true,
-            description_lists: true,
-            superscript: true,
-            strikethrough: true,
-            footnotes: true,
-            ..comrak::ComrakExtensionOptions::default()
-        },
-
-        render: comrak::ComrakRenderOptions {
-            unsafe_: true,
-            github_pre_lang: true,
-            hardbreaks: true,
-            full_info_string: true,
-            ..comrak::ComrakRenderOptions::default()
-        },
+    let Ok(HTMLOutput { content, .. }) = process_markdown_to_html(s) else {
+        panic!("Error parsing markdown");
     };
-    let mut plugins = ComrakPlugins::default();
-
-    let adapter = SyntectAdapter::new("InspiredGitHub");
-    plugins.render.codefence_syntax_highlighter = Some(&adapter);
-
-    let html = markdown_to_html_with_plugins(s, &options, &plugins);
-    html
+    content
 }
