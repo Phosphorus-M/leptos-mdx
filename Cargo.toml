@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 leptos = { git = "https://github.com/leptos-rs/leptos.git", branch = "islands", features = [ "ssr", "islands" ] }
-html_parser = "0.7.0"
-comrak = "0.18.0"
 frontmatter = "0.4.0"
+femark = "0.1.5"
+tl = "0.7.8"
+regex = "1.10.4"
