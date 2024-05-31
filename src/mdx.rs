@@ -1,5 +1,5 @@
 use leptos::{
-    component, html::ElementDescriptor, warn, Children, Fragment, HtmlElement, IntoView, View,
+    component, html::ElementDescriptor, Children, Fragment, HtmlElement, IntoView, View,
 };
 use regex::Regex;
 use std::collections::HashMap;
@@ -96,17 +96,18 @@ pub fn process_element(
                      * Replace new lines with <br /> only if they are preceded and followed by text.
                      * to avoid adding <br /> to empty lines.
                      */
-                    let reg = Regex::new(r".+(\n).+").unwrap();
+                    let reg = Regex::new(r"(.+)\n(.+)").unwrap();
 
-                    let t = reg
-                        .replace_all(&t, |caps: &regex::Captures| format!("{} <br />", &caps[0]));
+                    let t = reg.replace_all(&t, |caps: &regex::Captures| {
+                        format!("{} <br /> {}", &caps[1], &caps[2])
+                    }).to_string();
 
                     return t.into_view();
                 }
 
                 return t.into_view();
             } else {
-                warn!("error parsing raw text: {:?}", text);
+                println!("error parsing raw text: {:?}", text);
                 return ().into_view();
             }
         }
@@ -271,7 +272,7 @@ pub fn process_element(
                 "slot" => html_element(&tag.clone(), child_views, leptos::html::slot()),
                 "template" => html_element(&tag.clone(), child_views, leptos::html::template()),
                 _ => {
-                    warn!("unknown element {}", name);
+                    println!("unknown element {}", name);
                     ().into_view()
                 }
             }
