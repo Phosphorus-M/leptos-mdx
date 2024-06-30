@@ -1,11 +1,18 @@
 use leptos::{
-    component, html::ElementDescriptor, warn, Children, Fragment, HtmlElement, IntoView, View,
+    component, html::ElementDescriptor, logging::warn, Children, Fragment, HtmlElement, IntoView,
+    View,
 };
 use regex::Regex;
 use std::collections::HashMap;
 use tl::{HTMLTag, Node};
 
 use crate::markdown::parse;
+
+fn replace_newlines_with_br(input: &str) -> String {
+    let re = Regex::new(r".+(\n).+").unwrap();
+    // let re = Regex::new(r"(?m)(?<=\S)\n(?=\S)").unwrap();
+    re.replace_all(input, "<br />").to_string()
+}
 
 #[component]
 /// Renders a markdown source into a Leptos component.
@@ -96,12 +103,7 @@ pub fn process_element(
                      * Replace new lines with <br /> only if they are preceded and followed by text.
                      * to avoid adding <br /> to empty lines.
                      */
-                    let reg = Regex::new(r".+(\n).+").unwrap();
-
-                    let t = reg
-                        .replace_all(&t, |caps: &regex::Captures| format!("{} <br />", &caps[0]));
-
-                    return t.into_view();
+                    return replace_newlines_with_br(&t).into_view();
                 }
 
                 return t.into_view();
