@@ -6,7 +6,14 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-leptos = { git = "https://github.com/leptos-rs/leptos.git", branch = "islands", features = [ "ssr", "islands" ] }
+# leptos = { git = "https://github.com/leptos-rs/leptos.git", branch = "islands", features = [ "ssr", "islands" ] }
 html_parser = "0.7.0"
 comrak = "0.18.0"
 frontmatter = "0.4.0"
+femark = "0.1.5"
+tl = "0.7.8"
+regex = "1.10.4"
+leptos = { version = "0.6.12", default-features = false, features = [
+    "ssr",
+    "experimental-islands",
+] }
