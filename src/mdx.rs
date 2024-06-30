@@ -3,8 +3,15 @@ use std::collections::HashMap;
 use crate::markdown::parse;
 use html_parser::{Dom, Element};
 use leptos::{
-    component, html::ElementDescriptor, warn, Children, Fragment, HtmlElement, IntoView, View,
+    component, html::ElementDescriptor, logging::warn, Children, Fragment, HtmlElement, IntoView,
+    View,
 };
+
+fn replace_newlines_with_br(input: &str) -> String {
+    let re = Regex::new(r".+(\n).+").unwrap();
+    // let re = Regex::new(r"(?m)(?<=\S)\n(?=\S)").unwrap();
+    re.replace_all(input, "<br />").to_string()
+}
 
 #[component]
 /// Renders a markdown source into a Leptos component.
