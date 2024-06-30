@@ -21,9 +21,7 @@ This is a **markdown** file with some *content*, but also custom Leptos componen
 "#;
 
     let res = render_to_string(|| {
-        view! {
-            <MyMdx source={source.into()} />
-        }
+        view! { <MyMdx source=source.into()/> }
     });
 
     println!("{}", res);
@@ -54,23 +52,15 @@ fn MyMdx(source: String) -> impl IntoView {
 
     // profit!
 
-    view! {
-        <Mdx source={source} components={components} />
-    }
+    view! { <Mdx source=source components=components/> }
 }
 
 #[component]
 fn CustomTitle() -> impl IntoView {
-    view! {
-        <h1>Some custom title!</h1>
-    }
+    view! { <h1>Some custom title!</h1> }
 }
 
 #[component]
 fn Layout(children: Children) -> impl IntoView {
-    view! {
-        <div class="layout">
-            {children()}
-        </div>
-    }
+    view! { <div class="layout">{children()}</div> }
 }
