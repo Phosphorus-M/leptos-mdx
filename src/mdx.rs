@@ -7,12 +7,6 @@ use leptos::{
     View,
 };
 
-fn replace_newlines_with_br(input: &str) -> String {
-    let re = Regex::new(r".+(\n).+").unwrap();
-    // let re = Regex::new(r"(?m)(?<=\S)\n(?=\S)").unwrap();
-    re.replace_all(input, "<br />").to_string()
-}
-
 #[component]
 /// Renders a markdown source into a Leptos component.
 /// Custom components can be used in the markdown source.
