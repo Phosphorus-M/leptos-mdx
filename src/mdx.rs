@@ -1,18 +1,11 @@
 use leptos::{
-    component, html::ElementDescriptor, logging::warn, Children, Fragment, HtmlElement, IntoView,
-    View,
+    component, html::ElementDescriptor, leptos_dom::Text, logging::warn, Children, Fragment, HtmlElement, IntoView, View
 };
 use regex::Regex;
 use std::collections::HashMap;
 use tl::{HTMLTag, Node};
 
 use crate::markdown::parse;
-
-fn replace_newlines_with_br(input: &str) -> String {
-    let re = Regex::new(r".+(\n).+").unwrap();
-    // let re = Regex::new(r"(?m)(?<=\S)\n(?=\S)").unwrap();
-    re.replace_all(input, "<br />").to_string()
-}
 
 #[component]
 /// Renders a markdown source into a Leptos component.
@@ -92,26 +85,13 @@ pub fn process_element(
     components: &Components,
     parse_new_lines: bool,
 ) -> View {
+    println!("el: {:?}", el);
     match el {
-        Node::Comment(_comment) => return ().into_view(),
+        Node::Comment(comment) => return comment.as_utf8_str().to_string().into_view(),
         Node::Raw(raw) => {
-            let text = String::from_utf8(raw.as_bytes().to_vec());
-
-            if let Ok(t) = text {
-                if parse_new_lines {
-                    /*
-                     * Replace new lines with <br /> only if they are preceded and followed by text.
-                     * to avoid adding <br /> to empty lines.
-                     */
-                    return replace_newlines_with_br(&t).into_view();
-                }
-
-                return t.into_view();
-            } else {
-                warn!("error parsing raw text: {:?}", text);
-                return ().into_view();
-            }
-        }
+            let text = raw.as_utf8_str().to_string();
+            text.into_view()
+        },
         Node::Tag(tag) => {
             let mut child_views = vec![];
 
@@ -273,8 +253,9 @@ pub fn process_element(
                 "slot" => html_element(&tag.clone(), child_views, leptos::html::slot()),
                 "template" => html_element(&tag.clone(), child_views, leptos::html::template()),
                 _ => {
-                    warn!("unknown element {}", name);
-                    ().into_view()
+                    let mut return_view = vec![View::Text(Text::new(leptos::Oco::Owned(tag.raw().as_utf8_str().to_string())))];
+                    return_view.append(&mut child_views);
+                    return_view.into_view()
                 }
             }
         }
