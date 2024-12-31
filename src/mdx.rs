@@ -253,9 +253,12 @@ pub fn process_element(
                 "slot" => html_element(&tag.clone(), child_views, leptos::html::slot()),
                 "template" => html_element(&tag.clone(), child_views, leptos::html::template()),
                 _ => {
-                    let mut return_view = vec![View::Text(Text::new(leptos::Oco::Owned(tag.raw().as_utf8_str().to_string())))];
-                    return_view.append(&mut child_views);
-                    return_view.into_view()
+                    // TODO: improve this!
+                    let string = format!("<span><</span>{}<span>></span>", tag.clone().name().as_utf8_str().to_string());
+                    let text = Text::new(leptos::Oco::Owned(string));
+                    let mut view = vec![View::Text(text)];
+                    view.append(&mut child_views);
+                    view.into_view()
                 }
             }
         }

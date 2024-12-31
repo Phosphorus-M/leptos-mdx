@@ -15,8 +15,11 @@ fn extract_frontmatter(input: &str) -> Result<(Option<frontmatter::Yaml>, &str),
 }
 
 fn md_to_html(s: &str) -> String {
-    let Ok(HTMLOutput { content, .. }) = process_markdown_to_html(s) else {
-        panic!("Error parsing markdown");
-    };
-    content
+    let parser = pulldown_cmark::Parser::new(s);
+    let mut html_output = String::new();
+    pulldown_cmark::html::push_html(&mut html_output, parser);
+    // let Ok(HTMLOutput { content, .. }) = process_markdown_to_html(s) else {
+    //     panic!("Error parsing markdown");
+    // };
+    html_output
 }
